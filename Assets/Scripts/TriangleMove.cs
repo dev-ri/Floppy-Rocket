@@ -10,5 +10,4 @@ public class TriangleMove : MonoBehaviour
         rb.velocity = new Vector2(-speed, 0);
         Destroy(gameObject, destroyDely);
     }
-
 }

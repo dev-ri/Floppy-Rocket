@@ -3,10 +3,16 @@ public class RocketController : MonoBehaviour
 {
     public Rigidbody2D rb;
     public scoreCounter scoreCounter;
-    public timeManager timeManager;
+    public gameController gameController;
+    public cameraSheck cameraSheck;
     public GameObject crushEffect;
     public float jumpForce = 10f;
     public float gravityIncrise;
+
+    private void Start()
+    {
+        rb.constraints = RigidbodyConstraints2D.FreezeAll;
+    }
     private void Update()
     {
         float velY = rb.velocity.y;
@@ -16,6 +22,10 @@ public class RocketController : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0) | Input.GetButtonDown("Jump"))
         {
+            rb.constraints = RigidbodyConstraints2D.None;
+            rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+            rb.constraints = RigidbodyConstraints2D.FreezePositionX;
+
             rb.gravityScale = 1;
             rb.velocity = new Vector3(0, jumpForce, 0);
         }
@@ -32,8 +42,14 @@ public class RocketController : MonoBehaviour
         }
         else if(collision.tag == "enemy")
         {
-            timeManager.slowDown();
+            StartCoroutine(gameController.RocketDie());
+            cameraSheck.Shake();
             Instantiate(crushEffect, transform.position, Quaternion.identity);
+            Destroy(gameObject);
+        }
+        else if(collision.tag == "Ground")
+        {
+            StartCoroutine(gameController.RocketDie());
             Destroy(gameObject);
         }
     }
